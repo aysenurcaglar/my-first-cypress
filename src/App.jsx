@@ -14,26 +14,24 @@ import {
 import axios from 'axios';
 
 const initialForm = {
-  name: '',
-  surname: '',
+  firstName: '',
+  lastName: '',
   email: '',
   password: '',
-  terms: false,
 };
 
 const initialErrors = {
-  name: false,
-  surname: false,
+  firstName: false,
+  lastName: false,
   email: false,
   password: false,
-  terms: false,
 };
 
 const errorMessages = {
-  name: 'Please enter a valid name longer than 3 characters',
-  surname: 'Please enter a valid surname longer than 3 characters',
+  firstName: 'Please enter a valid name longer than 3 characters',
+  lastName: 'Please enter a valid last name longer than 3 characters',
   email: 'Please enter a valid email address',
-  password: 'Password must be at least 8 characters long, should contain at least one upper case, one lower case, one digit and one special character',
+  password: 'Password must be at least 8 characters long, contain at least one upper case, one lower case, one digit and one special character',
 };
 
 const validateEmail = (email) => {
@@ -56,14 +54,12 @@ export default function Login() {
 
 
   const handleChange = (event) => {
-    let { name, value, type } = event.target;
-    value = type === 'checkbox' ? event.target.checked : value;
+    let { name, value } = event.target;
     setForm({ ...form, [name]: value });
 
     if (
-      (name === 'name' && value.length >= 3) ||
-      (name === 'surname' && value.length >= 3) ||
-      (name === 'terms' && value) ||
+      (name === 'firstName' && value.length >= 3) ||
+      (name === 'lastName' && value.length >= 3) ||
       (name === 'password' && value.length >= 8) && validatePassword(value) ||
       (name === 'email' && validateEmail(value))
     ) {
@@ -73,14 +69,27 @@ export default function Login() {
     }
   };
 
-  useEffect(() => {
+ /* useEffect(() => {
     if (
-      (form.name.length >= 3) ||
-      (form.surname.length >= 3) ||
+      (form.firstName.length >= 3) ||
+      (form.lastName.length >= 3) ||
       validateEmail(form.email) &&
-      (form.password.length >= 8) && validatePassword(form.password) &&
-      form.terms
+      (form.password.length >= 8) && validatePassword(form.password)
     ) {
+      setIsValid(true);
+    } else {
+      setIsValid(false);
+    }
+  }, [form]);
+  */
+ 
+  useEffect(() => {
+    const isFirstNameValid = form.firstName.length >= 3;
+    const isLastNameValid = form.lastName.length >= 3;
+    const isEmailValid = validateEmail(form.email);
+    const isPasswordValid = form.password.length >= 8 && validatePassword(form.password);
+  
+    if (isFirstNameValid && isLastNameValid && isEmailValid && isPasswordValid) {
       setIsValid(true);
     } else {
       setIsValid(false);
@@ -105,33 +114,33 @@ export default function Login() {
 
   return (
     <div className="App">
-      <h1 className='underline text-sky-600 mb-4'>Cypress Login</h1>
+      <h1 className='text-sky-600 mb-4'>Registration</h1>
       <Form onSubmit={handleSubmit}>
         <FormGroup>
-          <Label for="exampleName">Name</Label>
+          <Label for="exampleFirstName">First Name</Label>
           <Input
-            id="exampleName"
-            name="name"
-            placeholder="Enter your name"
+            id="exampleFirstName"
+            name="firstName"
+            placeholder="Enter your first name"
             type="text"
             onChange={handleChange}
-            invalid={errors.name}
-            value={form.name}
+            invalid={errors.firstName}
+            value={form.firstName}
           />
-          {errors.name && <FormFeedback>{errorMessages.name}</FormFeedback>}
+          {errors.firstName && <FormFeedback>{errorMessages.firstName}</FormFeedback>}
         </FormGroup>
         <FormGroup>
-          <Label for="exampleSurName">Surname</Label>
+          <Label for="exampleLastName">Last Name</Label>
           <Input
-            id="exampleSurName"
-            name="surname"
-            placeholder="Enter your surname"
+            id="exampleLastName"
+            name="lastName"
+            placeholder="Enter your last name"
             type="text"
             onChange={handleChange}
-            invalid={errors.surname}
-            value={form.surname}
+            invalid={errors.lastName}
+            value={form.lastName}
           />
-          {errors.surname && <FormFeedback>{errorMessages.surname}</FormFeedback>}
+          {errors.lastName && <FormFeedback>{errorMessages.lastName}</FormFeedback>}
         </FormGroup>
         <FormGroup>
           <Label for="exampleEmail">Email</Label>
@@ -160,20 +169,6 @@ export default function Login() {
           {errors.password && (
             <FormFeedback>{errorMessages.password}</FormFeedback>
           )}
-        </FormGroup>
-        <FormGroup check>
-          <Input
-            id="terms"
-            name="terms"
-            checked={form.terms}
-            type="checkbox"
-            onChange={handleChange}
-            invalid={errors.terms}
-            data-cy="terms"
-          />{' '}
-          <Label htmlFor="terms" check>
-            I agree to terms of service and privacy policy
-          </Label>
         </FormGroup>
         <FormGroup className="text-center p-4">
           <Button disabled={!isValid} color="primary">

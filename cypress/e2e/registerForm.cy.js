@@ -13,11 +13,16 @@ describe("form validations", () => {
 
   // Bu testin geçmemesi lazım
   it("form doldurulunca buton aktif oluyor", () => {
-    cy.get('input[name="name"]').type("as");
-    cy.get('input[name="surname"]').type("Özdemir");
+    cy.get('input[name="firstName"]').type("as");
+
+    cy.get('input[name="lastName"]').type("Çağlar");
     cy.get('input[name="email"]').type("admin@test.com");
     cy.get('input[name="password"]').type("123456Qa!");
-    cy.get('[data-cy="terms"]').check();
+
+    cy.get("button").should("be.disabled");
+
+    cy.get('input[name="firstName"]').clear().type("Ayşe Nur");
+
     cy.get("button").should("not.be.disabled");
   });
 });
