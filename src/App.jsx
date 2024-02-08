@@ -51,6 +51,7 @@ export default function Login() {
   const [form, setForm] = useState(initialForm);
   const [errors, setErrors] = useState(initialErrors);
   const [isValid, setIsValid] = useState(false);
+  const [userId, setUserId] = useState(null);
 
 
   const handleChange = (event) => {
@@ -82,7 +83,7 @@ export default function Login() {
     }
   }, [form]);
   */
- 
+
   useEffect(() => {
     const isFirstNameValid = form.firstName.length >= 3;
     const isLastNameValid = form.lastName.length >= 3;
@@ -105,6 +106,7 @@ export default function Login() {
       .post('https://reqres.in/api/users', form)
       .then((res) => {
         console.log(res);
+        setUserId(res.data.id);
         setForm(initialForm);
         console.log("success")
       }).catch((err) => {
@@ -174,6 +176,7 @@ export default function Login() {
           <Button disabled={!isValid} color="primary">
             Register
           </Button>
+          {userId && <p>User ID: {userId}</p>}
         </FormGroup>
       </Form></div>
   );
